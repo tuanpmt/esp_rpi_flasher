@@ -1,2 +1,3 @@
 pyserial
 configparser
+RPi.GPIO
