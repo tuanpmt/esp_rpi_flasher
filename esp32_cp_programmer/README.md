@@ -22,9 +22,9 @@ CP2102 IOTMAKERVN:
 
 ### 3D
 
-[![auto flash ESP32 3D](assets/auto-flash-3d-top.png)]
+![auto flash ESP32 3D](assets/auto-flash-3d-top.png)
 
-[![auto flash ESP32 3D](assets/auto-flash-3d-bot.png)]
+![auto flash ESP32 3D](assets/auto-flash-3d-bot.png)
 
 ### Pinout 
 
