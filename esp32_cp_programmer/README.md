@@ -1,8 +1,8 @@
-# CP2102_iotmaker
+# ESP32 Progammer
 
 ## Features
 
-CP2102 IOTMAKERVN:
+ESP32 Progammer
 - Size: 22x30.5 mm.
 - Intergrate micro USB.
 - Input Voltage: 5v (Vusb).
