@@ -163,7 +163,7 @@ LED and push button have been declared by default as Step 1 if you want to chang
 
 ## Video
 
-[![esp-rpi-flasher](https://img.youtube.com/vi/WYjCUG_oZSI/0.jpg)](https://www.youtube.com/watch?v=1yxlvqezjzI "ESP RPI FLASHER")
+[![esp-rpi-flasher](https://img.youtube.com/vi/WYjCUG_oZSI/0.jpg)](https://youtu.be/gd818KGObi0 "ESP RPI FLASHER")
 
 ## Ref
 

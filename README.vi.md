@@ -169,7 +169,7 @@ LED và nút nhấn đã được khai báo mặc định như [Bước 1: Kết
 
 ## Video hướng dẫn
 
-[![esp-rpi-flasher](https://img.youtube.com/vi/WYjCUG_oZSI/0.jpg)](https://www.youtube.com/watch?v=1yxlvqezjzI "ESP RPI FLASHER")
+[![esp-rpi-flasher](https://img.youtube.com/vi/WYjCUG_oZSI/0.jpg)](https://youtu.be/gd818KGObi0 "ESP RPI FLASHER")
 
 ## Tài liệu tham khảo
 
