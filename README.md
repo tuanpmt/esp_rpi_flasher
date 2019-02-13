@@ -30,10 +30,10 @@ The features of the program run on Raspberri Pi as follows:
 * [CP2102 USB UART board](./esp32_cp_programmer)
 * Micro USB Cable, Button, LED, PCB prototype.
 
-**Các nút chức năng và đèn báo**
+**Functianal button and LED**
 
-| | Function |
-|: ---: |: ---: |
+|  | Function |
+|:---:|:---:|
 | Flash Button | Click to flash the program |
 | Reflash Button | Click to re-flash the failed board |
 | Reboot Button | Click to restart Raspberry |
