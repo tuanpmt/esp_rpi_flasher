@@ -1,50 +1,51 @@
-# ESP RPI FLASHER
-
-**Mục lục**
-* [Giới thiệu](#Giới-thiệu)
-* [Chuẩn bị](#Chuẩn-bị)
-* [Các bước thực hiện](#Các-bước-thực-hiện)
-* [Lưu ý](#Lưu-ý)
-* [Tài liệu tham khảo](#Tài-liệu-tham-khảo)
-## Giới thiệu
-
-Với khả năng tự động nhận biết và nạp được nhiều mạch trong cùng một thời điểm, script giúp tiết kiệm nhiều thời gian cho việc nạp code trong sản xuất.
-
-Tính năng:
-- Tự động nhận biết mạch nạp đang được kết nối.
-- Nạp nhiều mạch cùng một lúc.
-- Cho phép nạp lại các board nạp thất bại.
+# ESP32 RPI FLASHER
 
 ![flasher tool example](images/flasher-tool.jpg)
 ![flasher tool example](images/flasher-tool-2.jpg)
 
-## Chuẩn bị
-* [Raspberry Pi 3 Model B/B+](https://iotmaker.vn/raspberry-pi-model-b-plus.html)
-* [Thẻ nhớ 16GB](https://iotmaker.vn/the-nho-microsdhc-sandisk-ultra-16gb-48mb-s.html)
-* [Mạch tự động nạp cho ESP (CP2102 USB UART board)](https://iotmaker.vn/esp-auto-flash.html)
-* Cáp Micro USB, nút nhấn, LED, PCB đục lỗ.
+Language: [Việt Nam](./README.vi.md)
+
+## Introduce
+
+When mass-producing ESP32's products we need to have the tool to load the program for the product as quickly as possible. We have several ways to optimize and speed up loading binary firmware for ESP32 as follows:
+- Flash multiple products at the same time
+- Reduce the binary size
+- Speed ​​up the UART baudrate
+- Automate loading steps (automatically into bootloader mode ...)
+
+ESP RPI FLASHER is a set of ESP32 multi-board load support tools at the same time including:
+- High-speed USB-UART CP2102 board, supporting baudrate speed up to 2Mbps
+- The program running on Raspberry Pi can use multiple CP2102 at the same time
+
+![flasher tool example](images/WX20190213-141649@2x.png)
+
+The features of the program run on Raspberri Pi as follows:
+- Automatically identify the CP2102 that is being connected (can plug multiple via USB port)
+- Change firmware for ESP32 easily with configuration file
+- Allow reflash failed boards.
+
+## Prepare
+* [Raspberry Pi 3 Model B/B+](https://www.raspberrypi.org)
+* Thẻ nhớ 16GB
+* [CP2102 USB UART board](./esp32_cp_programmer)
+* Micro USB Cable, Button, LED, PCB prototype.
 
 **Các nút chức năng và đèn báo**
 
-|  | Chức năng |
-|:---:|:---:|
-| Flash Button | Nhấn để nạp chương trình |
-| Reflash Button | Nhấn để nạp lại cho các board nạp lỗi |
-| Reboot Button | Nhấn để khởi động lại Raspberry |
-| Flash LED | Báo thiết bị đang nạp chương trình |
-| Reflash LED | Báo có board nạp bị lỗi |
-| Ready LED | Báo raspberry sãn sàng được sử dụng |
+| | Function |
+|: ---: |: ---: |
+| Flash Button | Click to flash the program |
+| Reflash Button | Click to re-flash the failed board |
+| Reboot Button | Click to restart Raspberry |
+| Flash LED | Report device loading program |
+| Reflash LED | Report with loaded board failed |
+| Ready LED | Raspberry are ready to be used |
 
-## Các bước thực hiện
+## Steps
 
-* [Bước 1: Kết nối phần cứng thiết bị](#Bước-1:-Kết-nối-phần-cứng-thiết-bị)
-* [Bước 2: Cài đặt hệ điều hành Raspbian cho raspberry](#Bước-2:-Cài-đặt-hệ-điều-hành-cho-Raspberry)
-* [Bước 3: Cài đặt script cho raspberry](#Bước-3:-Cài-đặt-script-cho-raspberry)
-* [Bước 4: Thiết lập tự động chạy script khi khởi động raspberry](#Bước-4:-Thiết-lập-tự-động-chạy-script-khi-khởi-động-raspberry)
+### Step 1: Connect device hardware
 
-### Bước 1: Kết nối phần cứng thiết bị
-
-**Sơ đồ nối dây**
+**Wire connections**
 
 ![Wiring](images/wiring.png)
 
@@ -57,30 +58,27 @@ Tính năng:
 | Reflash LED | 7 |
 | Ready LED | 8 |
 
-Tham khảo bảng mạch điều khiển sau khi được hàn cố định
+The control circuit board after welding is fixed
 
 ![wiring complete](images/wiring-complete.jpg)
 
+### Step 2: Installing Raspbian for raspberry
+* Download the latest Raspbian version [here](https://www.raspberrypi.org/downloads/raspbian/).
+* Extract the downloaded file (the file after extracting has `.img` extension).
+* Insert a memory card, open the terminal and execute the `sudo fdisk -l` command
+* Determine the disk name when inserting a memory card, usually /dev/mmcblk0.
+* Continue to execute the commands:
+     * `cd Downloads /`
+     * `sudo dd bs = 4M if = 2017-07-05-raspbian-jessie-lite.img of = /dev/mmcblk0`
+* Note: The `cd Downloads/` command is used to go to the directory containing the installation file.
+* Once done, we have a memory card that can boot Raspbian.
 
-### Bước 2: Cài đặt hệ điều hành cho Raspberry
-* Tải bản Raspbian mới nhất [tại đây](https://www.raspberrypi.org/downloads/raspbian/).
-* Giải nén file mới tải về (file sau khi giải nén có đuôi .img).
-* Cắm thẻ nhớ vào máy tính, mở terminal lên và thực hiện lệnh `sudo fdisk -l`
-* Xác định tên disk khi cắm thẻ nhớ, thông thường là /dev/mmcblk0.
-* Tiếp tục thực hiện các lệnh:
-    * `cd Downloads/`
-    * `sudo dd bs=4M if=2017-07-05-raspbian-jessie-lite.img of=/dev/mmcblk0`
-* Lưu ý: Lệnh `cd Downloads/` dùng để đi đến thư mục chứa file cài đặt.
-* Sau khi thực hiện xong thì chúng ta có thẻ nhớ có thể khởi động được Raspbian.
+**Ref:** [Cách cài đặt hệ điều hành raspbian cho raspberry.](https://www.raspberrypi.org/documentation/installation/installing-images/)
 
-**Tham khảo:** [Cách cài đặt hệ điều hành raspbian cho raspberry.](https://www.raspberrypi.org/documentation/installation/installing-images/)
-
-**Kết nối Wifi và SSH tới Raspberry PI**
-* Rút thẻ nhớ vừa khởi tạo ra, cắm lại vào máy tính. Lúc này trên máy Linux/Ubuntu sẽ mount 2 phân vùng, phân vùng boot và phân vùng rootfs.
-* Truy cập tới phân vùng rootfs, truy cập vào thư mục **/etc/wpa-supplicant/** và file **wpa-supplicant.conf** trong thư mục này, ta thực hiện:
-    * Di chuyển đến thư mục **/etc/wpa-supplicant/**
-    * Mở terminal tại thư mục trên và thực hiện lệnh `sudo nano wpa-supplicant.conf`
-    * Sửa file với nội dung như sau:
+**Setting Wifi and SSH to Raspberry PI**
+* Remove the memory card and plug it back into the computer. At this time, The Linux/Ubuntu OS will mount 2 partitions, `boot` partition and `rootfs` partition.
+* using `rootfs`, and open **/etc/wpa-supplicant/wpa-supplicant.conf** in this directory:
+* Edit that file with this conntent:
 ```
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
@@ -89,43 +87,48 @@ network={
   psk="your pass"
 }
 ```
-* Từ tháng 11/2016, Raspberry đã khóa SSH khi khởi động. Để mở khóa SSH, cần tạo 1 file ssh (lưu ý: file này không có phần đuôi mở rộng) trong phân vùng boot của SD Card.
-* Cắm thẻ nhớ vào RPI và chờ khởi động trong khoảng 1 phút.
-* Tìm địa chỉ IP của raspberry bằng cách đăng nhập vào trang cấu hình của Modem WiFi (ví dụ: http://192.168.1.1). Hầu hết tất cả các modem sẽ hiển thị DHCP Client list, tìm cái nào có host name là raspberrypi, lấy IP đó, ví dụ 192.168.1.12. Ngoài ra, một số phần mềm hỗ trợ scan IP như: [Angry IP Scanner](https://angryip.org/download/#mac).
-* Mở terminal lên, ssh vào địa chỉ IP của raspberry: `ssh pi@192.168.1.12` và gõ mật khẩu: `raspberry` (Lưu ý máy tính cần sử dụng chung mạng với raspberry).
-* Vậy là đã hoàn thành quá trình cài đặt Raspbian cho Raspberry Pi thông qua Linux/Ubuntu.
 
-### Bước 3: Cài đặt script cho raspberry
+* Since November 2016, Raspberry has locked SSH when starting. To unlock SSH, create an `ssh` file (note: this file does not have an extension) in the boot partition of SD Card.
+* Insert the memory card into RPI and wait for it to start in about 1 minute.
+* Find the IP address of raspberry by logging in to the configuration page of WiFi Modem (for example: http://192.168.1.1). Almost all modems will display the DHCP Client list, find whichever host name is raspberrypi, get that IP, for example 192.168.1.12. In addition, some IP scanning software support such as [Angry IP Scanner](https://angryip.org/download/#mac).
+* Open terminal up, ssh to raspberry's IP address: `ssh pi @ 192.168.1.12` and type the password:` raspberry` (Note the computer needs to use the same network with raspberry).
+* So finished installing Raspbian for Raspberry Pi.
 
-* Mở terminal lên, ssh vào Raspberry bằng lệnh `ssh pi@192.168.1.12` và gõ mật khẩu: `raspberry`.
-* Clone dự án bằng lệnh: `git clone https://git.nanochip.vn/esp/esp_rpi_flasher.git`
+### Step 3: Install script
 
-**Lưu ý:** Mặc định, dự án cần được lưu tại thư mục **/home/pi**, nếu muốn lưu script vào vị trí khác, tham khảo [Cấu hình đường dẫn thư mục](#Cấu-hình-đường-dẫn-thư-mục).
+* Open the terminal, ssh by `ssh pi@192.168.1.12` with password: `raspberry`.
+* Clone project: `git clone --recursive https://github.com/tuanpmt/esp_rpi_flasher.git`
 
-* Cấp quyền thực thi và chạy file cài đặt **install.sh** bằng lệnh: 
-`sudo chmod +x install.sh && ./install.sh`
+**Note:** By default, the project needs to be saved in the **/home/pi** directory, if you want to save the script to another location, refer to [Configuring directory path](#Configuration-picture-path-letter-item).
 
-### Bước 4: Thiết lập tự động chạy script khi khởi động raspberry
-* Sau bước cài đặt script cho raspberry, kiểm tra đường dẫn thư mục hiện tại bằng lệnh: `$PWD` (đường dẫn mặc định là /home/pi/esp_rpi_flasher)
-* Gõ lệnh `sudo nano /home/pi/.bashrc` để edit file **.bashrc**
-* Thêm nội dung sau vào dòng cuối của file **.bashrc**
+* Install python and provide the firmware to the correct directory (using the `firmware_examples`):
+
+```
+sudo pip install -r requirements.txt
+``` 
+
+### Step 4: Set up auto-run script when raspberry starts
+* After installing the raspberry script, check the current directory path with the command: `$PWD` (the default path is /home/pi/esp_rpi_flasher)
+* Type `sudo nano /home/pi/.bashrc` to edit the **.Bashrc** file
+* Add the following content to the last line of the file **.Bashrc**
+
 ```
 echo Running at boot 
 sudo /usr/bin/python3 /home/pi/esp_rpi_flasher/flasher.py &
 ```
-Trong đó:
-`/home/pi/esp_rpi_flasher/flasher.py` là đường dẫn mặc định của dự án, nếu đã lưu script vào vị trí khác, tham khảo [Cấu hình đường dẫn thư mục](#Cấu-hình-đường-dẫn-thư-mục)
+
+With: `/home/pi/esp_rpi_flasher/flasher.py` is the default path of the project, if the script is saved in another location
 * Nhấn **Ctrol** + **x** để save và reboot raspberry bằng lệnh `sudo reboot`.
 
-Tham khảo thêm một số cách chạy script khi khởi động raspbian [tại đây](https://www.dexterindustries.com/howto/run-a-program-on-your-raspberry-pi-at-startup/)
+Check out some more ways to run scripts when starting raspbian [here](https://www.dexterindustries.com/howto/run-a-program-on-your-raspberry-pi-at-startup/)
 
-## Lưu ý
+## Notes
 
-Các thiết lập cơ bản và file code sẽ được lưu trong đường dẫn **/boot/code** theo cấu trúc như sau:
+The basic settings and firmware will be saved in the `/boot/firmware` path as follows:
 
 ```
 boot
-├──code
+├──firmware
     ├──config.ini
     ├──encrypted
         ├──app-encrypted.bin
@@ -134,34 +137,35 @@ boot
         ├──partitions-encrypted.bin
         ├──flash_encryption_key_1.0.0.alpha.4.bin
         ├──secure-bootloader-key-256.bin
-    ├──nomal
+    ├──normal
         ├──app.bin
         ├──bootloader.bin
         ├──ota_data_initial.bin
         ├──partitions.bin
 ```
 
-Trong đó:
-* **config.ini**: File lưu trữ các cấu hình như: chân LED, nút nhấn và đường dẫn file code,...
-* **encrypted**: Thư mục chứa code đã được mã hoá (sử dụng khi nạp chương trình có secure boot and flash encryption).
-* **nomal**: Thư mục chứa code chưa được mã hoá (sử dụng khi nạp chương trình thông thường).
+Inside:
+* **config.ini**: File stores configurations such as: LED pins, buttons and firmware paths, ...
+* **encrypted**: The directory contains the encrypted firmware (used when loading programs that can boot boot and flash encryption).
+* **normal**: The folder contains unencrypted firmware (used when loading regular programs).
 
 ### Secure boot and flash encryption
-Mặc định script sẽ nạp chương trình theo cách thông thường (không có secure boot and flash encryption). Vào thư mục **/boot/code/** mở file **config.ini** và chỉnh sửa `isEncrypt = True` để nạp chương trình có secure boot and flash encryption.
+By default the script will load the program in the usual way (without secure boot and flash encryption). Enter the `/boot/firmware/` directory and open the `config.ini` file and edit `isEncrypt = True` to load the program to secure boot and flash encryption.
 
-### Cấu hình đường dẫn thư mục
-Mặc định script cần được lưu theo đường dẫn **home/pi** tuy nhiên, nếu muốn lưu script trong thư mục khác cần chỉnh sửa:
-* Khi hoàn thành bước 1, bước 2, bước 3, trong thư mục **/boot/code/** mở file **config.ini** và thay đổi đường dẫn của **projectPath**
-* Ở bước 4: Tự động chạy script khi khởi động raspbian, cần thay đổi đường dẫn đến file **flasher.py**
+### Configure directory path
+By default the script needs to be saved under the path `/home/pi` however, if you want to save the script in another directory you need to edit:
+* When completing step 1, step 2, step 3, in the `/boot/firmware/` directory open the **config.ini** file and change the path of **projectPath**
+* In step 4: Automatically run the script when starting raspbian, need to change the path to the **flasher.py** file
 
-### Cấu hình chân LED và Button của Raspberry
-LED và nút nhấn đã được khai báo mặc định như [Bước 1: Kết nối phần cứng thiết bị](#Bước-1:-Kết-nối-phần-cứng-thiết-bị) nếu bạn muốn thay đổi chân kết nối LED và Button với raspberry, tiến hành vào thư mục **/boot/code/** mở file **config.ini** và thay đổi chân LED và Button cho phù hợp.
+### Raspberry configuration and Button of Raspberry
 
-## Video hướng dẫn
+LED and push button have been declared by default as Step 1 if you want to change the LED connector pins and Button with raspberry, proceed to the `/boot/firmware/` folder open the ** config.ini file ** and change the LED and Button pins accordingly.
 
-[![esp-rpi-flasher](https://img.youtube.com/vi/WYjCUG_oZSI/0.jpg)](https://www.youtube.com/watch?v=WYjCUG_oZSI "ESP RPI FLASHER")
+## Video
 
-## Tài liệu tham khảo
+[![esp-rpi-flasher](https://img.youtube.com/vi/WYjCUG_oZSI/0.jpg)](https://www.youtube.com/watch?v=1yxlvqezjzI "ESP RPI FLASHER")
+
+## Ref
 
 * [Raspberry Pi3 model B/B+](https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/)
 * [Install Raspbian for raspberry](https://www.raspberrypi.org/documentation/installation/installing-images/)

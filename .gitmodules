@@ -1,6 +1,3 @@
 [submodule "esptool"]
 	path = esptool
 	url = https://github.com/espressif/esptool.git
-[submodule "auto-flash-esp32"]
-	path = auto-flash-esp32
-	url = https://git.nanochip.vn/iot/auto-flash-esp32.git

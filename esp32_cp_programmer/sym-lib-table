@@ -1,0 +1,8 @@
+(sym_lib_table
+  (lib (name Interfaces_USB)(type Legacy)(uri ${KIPRJMOD}/lib/Interfaces_USB.lib)(options "")(descr ""))
+  (lib (name Resistors)(type Legacy)(uri ${KIPRJMOD}/lib/Resistors.lib)(options "")(descr ""))
+  (lib (name Capacitors)(type Legacy)(uri ${KIPRJMOD}/lib/Capacitors.lib)(options "")(descr ""))
+  (lib (name connector)(type Legacy)(uri ${KIPRJMOD}/lib/connector.lib)(options "")(descr ""))
+  (lib (name device)(type Legacy)(uri ${KIPRJMOD}/lib/device.lib)(options "")(descr ""))
+  (lib (name connector_generic)(type Legacy)(uri ${KIPRJMOD}/lib/connector_generic.lib)(options "")(descr ""))
+)
