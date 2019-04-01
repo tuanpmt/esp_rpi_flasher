@@ -5,7 +5,7 @@
 
 Language: [Việt Nam](./README.vi.md)
 
-## Introduce
+## Introduction
 
 When mass-producing ESP32's products we need to have the tool to load the program for the product as quickly as possible. We have several ways to optimize and speed up loading binary firmware for ESP32 as follows:
 - Flash multiple products at the same time
